@@ -38,7 +38,7 @@ import (
 
 const usageDoc = `Calculate cyclomatic complexities of Go functions.
 Usage:
-        gocyclo [flags] <Go file or directory> ...
+        abgocyclo [flags] <Go file or directory> ...
 
 Flags:
         -over N   show functions with complexity > N only and
