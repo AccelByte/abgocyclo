@@ -81,10 +81,12 @@ func main() {
 	stats := analyze(args, *exclude)
 	if *value && (*avg || *total) {
 		if *avg {
-			fmt.Printf("%.3g\n", average(stats))
+			env_avg := fmt.Sprintf("%.3g", average(stats))
+			os.Setenv("CYCLO_AVG", env_avg)
 		}
 		if *total {
-			fmt.Printf("%d\n", sumtotal(stats))
+			env_total := fmt.Sprint("%d", sumtotal(stats))
+			os.Setenv("CYCLO_TOTAL", env_total)
 		}
 
 	} else {
