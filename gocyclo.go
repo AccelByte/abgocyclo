@@ -133,19 +133,26 @@ func analyzeFile(fname string, stats []stat) []stat {
 }
 
 func analyzeDir(dirname string, exclude string, stats []stat) []stat {
-	filepath.Walk(dirname, func(path string, info os.FileInfo, err error) error {
-		if err == nil && !info.IsDir() && strings.HasSuffix(path, ".go") {
-			if exclude != "" {
+
+	// from gometalinter
+	// https://github.com/fzipp/gocyclo/pull/1/files
+	if exclude == "" {
+		files, _ := filepath.Glob(filepath.Join(dirname, "*.go"))
+		for _, file := range files {
+			stats = analyzeFile(file, stats)
+		}
+	} else {
+		// from accelbyte
+		filepath.Walk(dirname, func(path string, info os.FileInfo, err error) error {
+			if err == nil && !info.IsDir() && strings.HasSuffix(path, ".go") {
 				matched, _ := regexp.MatchString(exclude, path)
 				if matched != true {
 					stats = analyzeFile(path, stats)
 				}
-			} else {
-				stats = analyzeFile(path, stats)
 			}
-		}
-		return err
-	})
+			return err
+		})
+	}
 	return stats
 }
 
