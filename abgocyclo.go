@@ -60,6 +60,7 @@ func usage() {
 }
 
 var (
+	help    = flag.Bool("help", false, "show help")
 	over    = flag.Int("over", 0, "show functions with complexity > N only")
 	top     = flag.Int("top", -1, "show the top N most complex functions only")
 	avg     = flag.Bool("avg", false, "show the average complexity")
@@ -74,34 +75,38 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 	args := flag.Args()
-	if len(args) == 0 {
+	if *help {
 		usage()
 	}
 
-	stats := analyze(args, *exclude)
-	if *value && (*avg || *total) {
-		if *avg {
-			fmt.Printf("%.3g\n", average(stats))
-		}
-		if *total {
-			fmt.Printf("%d\n", sumtotal(stats))
-		}
-
+	if len(args) == 0 {
+		stats := analyze(args, "vendor/")
+		fmt.Printf("%d\n", sumtotal(stats))
 	} else {
+		stats := analyze(args, *exclude)
+		if *value && (*avg || *total) {
+			if *avg {
+				fmt.Printf("%.3g\n", average(stats))
+			}
+			if *total {
+				fmt.Printf("%d\n", sumtotal(stats))
+			}
+		} else {
 
-		sort.Sort(byComplexity(stats))
-		written := writeStats(os.Stdout, stats)
+			sort.Sort(byComplexity(stats))
+			written := writeStats(os.Stdout, stats)
 
-		if *avg {
-			showAverage(stats)
-		}
+			if *avg {
+				showAverage(stats)
+			}
 
-		if *total {
-			showTotal(stats)
-		}
+			if *total {
+				showTotal(stats)
+			}
 
-		if *over > 0 && written > 0 {
-			os.Exit(1)
+			if *over > 0 && written > 0 {
+				os.Exit(1)
+			}
 		}
 	}
 }
