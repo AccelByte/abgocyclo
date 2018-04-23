@@ -81,15 +81,15 @@ func main() {
 
 	if len(args) == 0 {
 		stats := analyze(args, "vendor/")
-		fmt.Printf("%d\n", sumtotal(stats))
+		fmt.Printf("%d", sumtotal(stats))
 	} else {
 		stats := analyze(args, *exclude)
 		if *value && (*avg || *total) {
 			if *avg {
-				fmt.Printf("%.3g\n", average(stats))
+				fmt.Printf("%.3g", average(stats))
 			}
 			if *total {
-				fmt.Printf("%d\n", sumtotal(stats))
+				fmt.Printf("%d", sumtotal(stats))
 			}
 		} else {
 
